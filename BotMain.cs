@@ -18,6 +18,8 @@ namespace WeatherBot
         {
             try
             {
+                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(update));
+
                 if (update.Type == UpdateType.Message)
                 {
                     var msg = update.Message;
