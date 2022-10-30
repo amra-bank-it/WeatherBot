@@ -13,22 +13,6 @@ namespace WeatherBot.BotKeyboard
         public static async Task respButton(ITelegramBotClient botClient, Message message, CallbackQuery callbackQuery)
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["WeatherApsny"].ConnectionString);
-            con.Open();
-
-            if (message == null)
-            {
-                await botClient.SendTextMessageAsync(callbackQuery.From.Id, callbackQuery.Data.ToString());
-
-                bool answer = false;
-                answer = SingletonDB.respBit(Convert.ToInt32(callbackQuery.From.Id));
-
-                if (answer == false)
-                {
-                    string queryInsert = $"INSERT INTO WeatherApsny.dbo.Weather(UserId) VALUES({callbackQuery.From.Id})";
-                    SqlCommand sqlCommand = new SqlCommand(queryInsert, con);
-                    sqlCommand.ExecuteNonQuery();
-                }
-            }
 
             ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(new[]
             {
@@ -122,6 +106,7 @@ namespace WeatherBot.BotKeyboard
                             await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels  + "\n" + humidity + "\n",replyMarkup: keyboard);
                             break;
                         }
+
                 }
 
                 con.Close();
@@ -137,9 +122,13 @@ namespace WeatherBot.BotKeyboard
         {
             try
             {
-                string queryInsert = $"UPDATE WeatherApsny.dbo.Weather SET City='" + city + "',Temp='" + temp.Replace("°", "") + 
+                con.Open();
+                string queryUser = $"INSERT INTO WeatherApsny.dbo.Weather (UserId) VALUES({message.Chat.Id})";
+                SqlCommand command = new SqlCommand(queryUser, con);
+                string queryUpdate = $"UPDATE WeatherApsny.dbo.Weather SET City='" + city + "',Temp='" + temp.Replace("°", "") + 
                     "',Feels='"+feels.Replace("°", "") +"',Humidity='"+humidity+"' WHERE UserId='" + message.Chat.Id + "'";
-                SqlCommand sqlCommand = new SqlCommand(queryInsert, con);
+                SqlCommand sqlCommand = new SqlCommand(queryUpdate, con);
+                
                 sqlCommand.ExecuteNonQuery();
 
             }
