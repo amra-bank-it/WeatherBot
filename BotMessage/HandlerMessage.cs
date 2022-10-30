@@ -1,4 +1,5 @@
-﻿using Telegram.Bot;
+﻿using NLog;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -8,8 +9,12 @@ namespace WeatherBot.BotMessage
     {
         public static async Task respMessage(ITelegramBotClient botClient, Message message)
         {
+            Logger logger = LogManager.GetCurrentClassLogger();
+
             if (message.Text.ToLower() == "/start")
             {
+                logger.Info("Начали работу");
+
                 ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(new[]
                 {
                 new KeyboardButton[]{"Гагра" , "Гудаута"},

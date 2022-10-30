@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -33,7 +34,8 @@ namespace WeatherBot.Connection
             return answer;
         }
         public static bool respBit(int chatId)
-        {           
+        {
+            Logger logger = LogManager.GetCurrentClassLogger();
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["WeatherApsny"].ConnectionString);
             con.Open();
             bool answer = false;
@@ -47,6 +49,7 @@ namespace WeatherBot.Connection
             while (reader.Read())
             {
                 idfromBase = reader[0].ToString();
+                logger.Info("Прочитали данные");
                 Console.WriteLine(answer);
             }
             if (idfromBase == null)

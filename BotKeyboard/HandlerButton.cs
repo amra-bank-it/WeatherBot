@@ -1,5 +1,7 @@
-﻿using System.Configuration;
+﻿using NLog;
+using System.Configuration;
 using System.Data.SqlClient;
+using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -13,7 +15,8 @@ namespace WeatherBot.BotKeyboard
         public static async Task respButton(ITelegramBotClient botClient, Message message, CallbackQuery callbackQuery)
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["WeatherApsny"].ConnectionString);
-            
+
+            Logger logger = LogManager.GetCurrentClassLogger();
 
             ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(new[]
             {
@@ -114,6 +117,7 @@ namespace WeatherBot.BotKeyboard
             }
             catch (Exception err)
             {
+                logger.Error(err);
                 Console.WriteLine($"Возникла ошибка {err.ToString()}");
             }
 
@@ -121,20 +125,24 @@ namespace WeatherBot.BotKeyboard
 
         private static void SQLQuery(Message message, string city, string temp, string feels, string humidity, SqlConnection con)
         {
+            Logger logger = LogManager.GetCurrentClassLogger();
             try
             {
+               
                 con.Open();
                 string queryUser = $"INSERT INTO WeatherApsny.dbo.Weather (UserId) VALUES({message.Chat.Id})";
                 SqlCommand command = new SqlCommand(queryUser, con);
                 string queryUpdate = $"UPDATE WeatherApsny.dbo.Weather SET City='" + city + "',Temp='" + temp.Replace("°", "") +
-                    "',Feels='" + feels.Replace("°", "") + "',Humidity='" + humidity + "' WHERE UserId='" + message.Chat.Id + "'";
+                    "',Feels='" + feels.Replace("°C", "") + "',Humidity='" + humidity + "' WHERE UserId='" + message.Chat.Id + "'";
                 SqlCommand sqlCommand = new SqlCommand(queryUpdate, con);
-
+                
                 sqlCommand.ExecuteNonQuery();
+                logger.Info("Сделали запись в базу");
 
             }
             catch (SqlException err)
             {
+                logger.Error(err);
                 Console.WriteLine("Произошла ошибка при передаче данных в базу. Код ошибки: " + err.ToString());
             }
         }
