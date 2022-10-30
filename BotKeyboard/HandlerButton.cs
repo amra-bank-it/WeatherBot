@@ -13,6 +13,7 @@ namespace WeatherBot.BotKeyboard
         public static async Task respButton(ITelegramBotClient botClient, Message message, CallbackQuery callbackQuery)
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["WeatherApsny"].ConnectionString);
+            
 
             ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(new[]
             {
@@ -37,7 +38,7 @@ namespace WeatherBot.BotKeyboard
                     case "Гагра":
                         {
                             url = "https://prognoz3.ru/abkhazia/gagra/ghagra";
-                            Parse.GetCode(url, ref city, ref temp , ref feels , ref humidity);
+                            Parse.GetCode(url, ref city, ref temp, ref feels, ref humidity);
                             SQLQuery(message, city, temp, feels, humidity, con);
 
                             await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels + "\n" + humidity + "\n", replyMarkup: keyboard);
@@ -49,7 +50,7 @@ namespace WeatherBot.BotKeyboard
                             Parse.GetCode(url, ref city, ref temp, ref feels, ref humidity);
                             SQLQuery(message, city, temp, feels, humidity, con);
 
-                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels  + "\n" + humidity + "\n", replyMarkup: keyboard);
+                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels + "\n" + humidity + "\n", replyMarkup: keyboard);
                             break;
                         }
                     case "Пицунда":
@@ -58,7 +59,7 @@ namespace WeatherBot.BotKeyboard
                             Parse.GetCode(url, ref city, ref temp, ref feels, ref humidity);
                             SQLQuery(message, city, temp, feels, humidity, con);
 
-                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels  + "\n" + humidity + "\n", replyMarkup: keyboard);
+                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels + "\n" + humidity + "\n", replyMarkup: keyboard);
                             break;
                         }
                     case "Афон":
@@ -67,7 +68,7 @@ namespace WeatherBot.BotKeyboard
                             Parse.GetCode(url, ref city, ref temp, ref feels, ref humidity);
                             SQLQuery(message, city, temp, feels, humidity, con);
 
-                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels  + "\n" + humidity + "\n", replyMarkup: keyboard);
+                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels + "\n" + humidity + "\n", replyMarkup: keyboard);
                             break;
                         }
                     case "Сухум":
@@ -76,7 +77,7 @@ namespace WeatherBot.BotKeyboard
                             Parse.GetCode(url, ref city, ref temp, ref feels, ref humidity);
                             SQLQuery(message, city, temp, feels, humidity, con);
 
-                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels  + "\n" + humidity + "\n", replyMarkup: keyboard);
+                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels + "\n" + humidity + "\n", replyMarkup: keyboard);
                             break;
                         }
                     case "Очамчира":
@@ -85,7 +86,7 @@ namespace WeatherBot.BotKeyboard
                             Parse.GetCode(url, ref city, ref temp, ref feels, ref humidity);
                             SQLQuery(message, city, temp, feels, humidity, con);
 
-                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels  + "\n" + humidity + "\n", replyMarkup: keyboard);
+                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels + "\n" + humidity + "\n", replyMarkup: keyboard);
                             break;
                         }
                     case "Ткуарчал":
@@ -94,16 +95,16 @@ namespace WeatherBot.BotKeyboard
                             Parse.GetCode(url, ref city, ref temp, ref feels, ref humidity);
                             SQLQuery(message, city, temp, feels, humidity, con);
 
-                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels  + "\n" + humidity + "\n", replyMarkup: keyboard);
+                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels + "\n" + humidity + "\n", replyMarkup: keyboard);
                             break;
                         }
                     case "Гал":
                         {
                             url = "https://prognoz3.ru/abkhazia/gali/galle";
                             Parse.GetCode(url, ref city, ref temp, ref feels, ref humidity);
-                            SQLQuery(message, city, temp, feels , humidity,con);
+                            SQLQuery(message, city, temp, feels, humidity, con);
 
-                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels  + "\n" + humidity + "\n",replyMarkup: keyboard);
+                            await botClient.SendTextMessageAsync(message.Chat.Id, city + "\nТемпература: " + temp + "°С" + "\n" + feels + "\n" + humidity + "\n", replyMarkup: keyboard);
                             break;
                         }
 
@@ -125,10 +126,10 @@ namespace WeatherBot.BotKeyboard
                 con.Open();
                 string queryUser = $"INSERT INTO WeatherApsny.dbo.Weather (UserId) VALUES({message.Chat.Id})";
                 SqlCommand command = new SqlCommand(queryUser, con);
-                string queryUpdate = $"UPDATE WeatherApsny.dbo.Weather SET City='" + city + "',Temp='" + temp.Replace("°", "") + 
-                    "',Feels='"+feels.Replace("°", "") +"',Humidity='"+humidity+"' WHERE UserId='" + message.Chat.Id + "'";
+                string queryUpdate = $"UPDATE WeatherApsny.dbo.Weather SET City='" + city + "',Temp='" + temp.Replace("°", "") +
+                    "',Feels='" + feels.Replace("°", "") + "',Humidity='" + humidity + "' WHERE UserId='" + message.Chat.Id + "'";
                 SqlCommand sqlCommand = new SqlCommand(queryUpdate, con);
-                
+
                 sqlCommand.ExecuteNonQuery();
 
             }

@@ -39,6 +39,8 @@ namespace WeatherBot.Connection
             bool answer = false;
             
             string querySelect = $"INSERT INTO WeatherApsny.dbo.Weather (UserId) VALUES({chatId})";
+            //string querySelect = $"SELECT UserId FROM WeatherApsny.dbo.Weather WHERE UserId = {chatId}";
+
             SqlCommand command = new SqlCommand(querySelect, con);
             SqlDataReader reader = command.ExecuteReader();
             string idfromBase = null;
